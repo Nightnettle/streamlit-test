@@ -4,8 +4,10 @@ import sys
 from pathlib import Path
 import shutil, os, tempfile
 
+import streamlit as st
 
-async def main():
+
+async def scraper():
 
     browser = await zd.start(
         headless=False,
@@ -19,14 +21,23 @@ async def main():
     # do a full page reload
     await page.reload()
 
-    try:
-        while True:
-            await asyncio.sleep(1)
-    except KeyboardInterrupt:
-        print("Exiting...")
-        await browser.stop()
+    await asyncio.sleep(4)
+
+    await page.save_screenshot()
+
+    await asyncio.sleep(5)
+
+    await browser.stop()
+
+
+def main():
+    st.title("Web Scraper with Zendriver and Streamlit")
+
+    if st.button("Start Scraping"):
+        st.write("Scraping started...")
+        asyncio.run(scraper())
+        st.write("Scraping completed!")
 
 
 if __name__ == '__main__':
-    # since asyncio.run never worked (for me)
-    asyncio.run(main())
+    main()
